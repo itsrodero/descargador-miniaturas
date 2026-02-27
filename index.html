@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Descargar Miniaturas de YouTube en HD, 4K y 1080p</title>
+    <meta name="description" content="Herramienta gratuita para extraer y guardar portadas y miniaturas de vídeos de YouTube en alta calidad (HD, HQ, 1080p).">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f0f2f5; color: #1c1e21; line-height: 1.6; }
+        header { background-color: #ffffff; padding: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center; }
+        header h1 { color: #ff0000; font-size: 28px; }
+        .container { max-width: 900px; margin: 40px auto; padding: 0 20px; text-align: center; }
+        .hero { background: #ffffff; padding: 40px 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        .hero p { color: #555; margin-bottom: 25px; font-size: 18px; }
+        .input-group { display: flex; flex-direction: column; gap: 15px; align-items: center; }
+        input[type="text"] { width: 100%; max-width: 600px; padding: 18px; font-size: 16px; border: 2px solid #ddd; border-radius: 8px; transition: 0.3s; }
+        input[type="text"]:focus { border-color: #ff0000; outline: none; box-shadow: 0 0 8px rgba(255,0,0,0.2); }
+        button { padding: 18px 30px; font-size: 18px; cursor: pointer; background-color: #ff0000; color: white; border: none; border-radius: 8px; font-weight: bold; transition: 0.3s; width: 100%; max-width: 600px; }
+        button:hover { background-color: #cc0000; transform: translateY(-2px); }
+        
+        /* Zona de Monetización */
+        .ad-space { background-color: #e9ecef; color: #adb5bd; padding: 30px; margin: 30px 0; border: 2px dashed #ced4da; border-radius: 8px; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
+        
+        /* Resultados */
+        #results { display: none; margin-top: 40px; text-align: left; }
+        .result-card { background: white; padding: 20px; border-radius: 12px; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .result-card h3 { margin-bottom: 15px; color: #333; display: flex; justify-content: space-between; align-items: center;}
+        .result-card img { width: 100%; border-radius: 8px; background: #eee; }
+        .btn-download { display: inline-block; padding: 12px 25px; background-color: #28a745; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; margin-top: 15px; transition: 0.3s; text-align: center; width: 100%; }
+        .btn-download:hover { background-color: #218838; }
+        
+        /* SEO Text */
+        .seo-content { margin-top: 50px; background: white; padding: 30px; border-radius: 12px; text-align: left; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .seo-content h2 { color: #333; margin-bottom: 15px; }
+        .seo-content p { color: #666; margin-bottom: 15px; }
+        
+        @media(min-width: 768px) {
+            .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>YT Thumbnail Downloader</h1>
+    </header>
+
+    <div class="container">
+        <div class="ad-space">Espacio para Anuncio (Google AdSense)</div>
+
+        <div class="hero">
+            <p>Pega el enlace de cualquier vídeo de YouTube y descarga su miniatura en todas las resoluciones disponibles al instante.</p>
+            <div class="input-group">
+                <input type="text" id="yt-url" placeholder="Ej: https://www.youtube.com/watch?v=h_HedjISQ3g">
+                <button onclick="getThumbnails()">Extraer Miniaturas</button>
+            </div>
+        </div>
+
+        <div id="results">
+            <h2 style="text-align: center; margin-bottom: 20px;">Resultados Obtenidos</h2>
+            
+            <div class="result-card">
+                <h3>1. Alta Resolución (HD 1080p) <span>⭐ Recomendado</span></h3>
+                <img id="img-max" src="" alt="Miniatura HD">
+                <a id="btn-max" class="btn-download" href="" target="_blank">Abrir y Guardar (1080p)</a>
+            </div>
+
+            <div class="ad-space">Espacio para Anuncio (Monetag / AdSense)</div>
+
+            <div class="results-grid">
+                <div class="result-card">
+                    <h3>2. Calidad Alta (720p)</h3>
+                    <img id="img-hq" src="" alt="Miniatura HQ">
+                    <a id="btn-hq" class="btn-download" href="" target="_blank">Abrir y Guardar (720p)</a>
+                </div>
+                <div class="result-card">
+                    <h3>3. Calidad Media (480p)</h3>
+                    <img id="img-mq" src="" alt="Miniatura Media">
+                    <a id="btn-mq" class="btn-download" href="" target="_blank">Abrir y Guardar (480p)</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="seo-content">
+            <h2>¿Cómo descargar la miniatura de un vídeo de YouTube?</h2>
+            <p>Con nuestra herramienta gratuita, obtener la portada de cualquier vídeo es un proceso de segundos. Solo tienes que copiar la URL (enlace) del vídeo de YouTube desde tu navegador o la aplicación móvil, pegarla en la caja de texto superior y hacer clic en "Extraer Miniaturas".</p>
+            <p>Nuestra web se conectará directamente a los servidores y te ofrecerá la imagen original en <strong>HD (1080p)</strong>, así como versiones más ligeras para tus proyectos de diseño, blogs o redes sociales. Todo ello de forma rápida, segura y sin necesidad de instalar programas adicionales.</p>
+        </div>
+    </div>
+
+    <script>
+        function getThumbnails() {
+            const url = document.getElementById('yt-url').value;
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|shorts\/|watch\?v=|&v=)([^#&?]*).*/;
+            const match = url.match(regExp);
+
+            if (match && match[2].length === 11) {
+                const videoId = match[2];
+                
+                // URLs oficiales de YouTube para las diferentes calidades
+                const urls = {
+                    max: `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`, // 1080p
+                    hq: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,       // 720p
+                    mq: `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`        // 480p
+                };
+                
+                // Insertar imágenes
+                document.getElementById('img-max').src = urls.max;
+                document.getElementById('img-hq').src = urls.hq;
+                document.getElementById('img-mq').src = urls.mq;
+
+                // Configurar botones de descarga
+                document.getElementById('btn-max').href = urls.max;
+                document.getElementById('btn-hq').href = urls.hq;
+                document.getElementById('btn-mq').href = urls.mq;
+
+                // Mostrar la sección de resultados
+                document.getElementById('results').style.display = 'block';
+                
+                // Hacer scroll suave hasta los resultados
+                document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+            } else {
+                alert('Oops, parece que el enlace no es válido. Asegúrate de copiar una URL correcta de YouTube.');
+            }
+        }
+    </script>
+</body>
+</html>
