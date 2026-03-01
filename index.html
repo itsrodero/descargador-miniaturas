@@ -97,7 +97,7 @@
             <p>Con nuestra herramienta gratuita, obtener la portada de cualquier vídeo es un proceso de segundos. Solo tienes que copiar la URL (enlace) del vídeo de YouTube desde tu navegador o la aplicación móvil, pegarla en la caja de texto superior y hacer clic en "Extraer Miniaturas".</p>
             <p>Nuestra web se conectará directamente a los servidores y te ofrecerá la imagen original en <strong>HD (1080p)</strong>, así como versiones más ligeras para tus proyectos de diseño, blogs o redes sociales. Todo ello de forma rápida, segura y sin necesidad de instalar programas adicionales.</p>
         </div>
-    </div>
+    
     <div id="tags-results" class="tags-container">
             <h3>🏷️ Etiquetas SEO Ocultas</h3>
             <p>Estas son las palabras clave exactas que este vídeo está usando para posicionarse. Cópialas para tus vídeos.</p>
@@ -114,7 +114,7 @@
             Al hacer clic en el botón de descarga, la imagen se abrirá en su tamaño original (1080p, 720p o 480p). En tu móvil, mantén pulsada la imagen y dale a "Guardar imagen". En ordenador, haz clic derecho y selecciona "Guardar imagen como...". Se guardará en tu carpeta de descargas predeterminada.</p>
         </div>
 
-    <script>
+  </div>  <script>
         // Guardamos las etiquetas para poder copiarlas luego
         let currentTagsText = "";
 
@@ -154,6 +154,7 @@
                     throw new Error('Error en la red');
                 })
                 .then(data => {
+                    const html = data.contents;
                     const html = data.contents;
                     // Buscamos las palabras clave ocultas en el código
                     const tagMatch = html.match(/<meta\s+name="keywords"\s+content="([^"]+)"/i);
@@ -197,6 +198,7 @@
 </body>
 
 </html>
+
 
 
 
