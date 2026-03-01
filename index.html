@@ -37,6 +37,14 @@
         .seo-content h2 { color: #333; margin-bottom: 15px; }
         .seo-content p { color: #666; margin-bottom: 15px; }
         
+       /* Estilos de las Etiquetas SEO */
+        .tags-container { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-top: 30px; text-align: left; display: none; }
+        .tags-container h3 { color: #333; margin-bottom: 5px; font-size: 20px;}
+        .tags-container p { color: #666; font-size: 14px; margin-bottom: 15px; }
+        .tag-pill { display: inline-block; background: #f0f2f5; color: #1c1e21; padding: 8px 16px; border-radius: 20px; margin: 0 8px 8px 0; font-size: 14px; border: 1px solid #ddd; }
+        .btn-copy-tags { background-color: #1c1e21; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 15px; cursor: pointer; margin-top: 15px; transition: 0.3s; font-weight: bold;}
+        .btn-copy-tags:hover { background-color: #333; }
+        
         @media(min-width: 768px) {
             .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         }
@@ -90,6 +98,13 @@
             <p>Nuestra web se conectará directamente a los servidores y te ofrecerá la imagen original en <strong>HD (1080p)</strong>, así como versiones más ligeras para tus proyectos de diseño, blogs o redes sociales. Todo ello de forma rápida, segura y sin necesidad de instalar programas adicionales.</p>
         </div>
     </div>
+    <div id="tags-results" class="tags-container">
+            <h3>🏷️ Etiquetas SEO Ocultas</h3>
+            <p>Estas son las palabras clave exactas que este vídeo está usando para posicionarse. Cópialas para tus vídeos.</p>
+            <div id="tags-list"></div>
+            <button class="btn-copy-tags" onclick="copyTags()">📋 Copiar todas las etiquetas</button>
+        </div>
+    
     <div class="seo-content" style="margin-top: 20px;">
             <h2>Preguntas Frecuentes (FAQ)</h2>
             <p><strong>¿Es legal descargar la miniatura de un vídeo de YouTube?</strong><br>
@@ -100,44 +115,89 @@
         </div>
 
     <script>
+        // Guardamos las etiquetas para poder copiarlas luego
+        let currentTagsText = "";
+
         function getThumbnails() {
             const url = document.getElementById('yt-url').value;
-            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|shorts\/|watch\?v=|&v=)([^#&?]*).*/;
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|shorts\/|watch\?v=|\&v=)([^#\&\?]*).*/;
             const match = url.match(regExp);
 
             if (match && match[2].length === 11) {
                 const videoId = match[2];
                 
-                // URLs oficiales de YouTube para las diferentes calidades
+                // 1. Mostrar las Miniaturas
                 const urls = {
-                    max: `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`, // 1080p
-                    hq: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,       // 720p
-                    mq: `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`        // 480p
+                    max: `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`,
+                    hq: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
+                    mq: `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`
                 };
-                
-                // Insertar imágenes
+
                 document.getElementById('img-max').src = urls.max;
                 document.getElementById('img-hq').src = urls.hq;
                 document.getElementById('img-mq').src = urls.mq;
 
-                // Configurar botones de descarga
                 document.getElementById('btn-max').href = urls.max;
                 document.getElementById('btn-hq').href = urls.hq;
                 document.getElementById('btn-mq').href = urls.mq;
 
-                // Mostrar la sección de resultados
                 document.getElementById('results').style.display = 'block';
+
+                // 2. Extraer Etiquetas SEO (La nueva magia)
+                document.getElementById('tags-results').style.display = 'block';
+                document.getElementById('tags-list').innerHTML = '<span class="tag-pill">⏳ Extrayendo etiquetas de los servidores de YouTube...</span>';
                 
-                // Hacer scroll suave hasta los resultados
+                // Usamos un proxy gratuito para leer el código de YouTube
+                fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://www.youtube.com/watch?v=' + videoId)}`)
+                .then(response => {
+                    if (response.ok) return response.json();
+                    throw new Error('Error en la red');
+                })
+                .then(data => {
+                    const html = data.contents;
+                    // Buscamos las palabras clave ocultas en el código
+                    const tagMatch = html.match(/<meta\s+name="keywords"\s+content="([^"]+)"/i);
+                    
+                    if (tagMatch && tagMatch[1]) {
+                        currentTagsText = tagMatch[1];
+                        const tagsArray = currentTagsText.split(',').map(tag => tag.trim());
+                        let tagsHtml = '';
+                        tagsArray.forEach(tag => {
+                            if(tag !== "") tagsHtml += `<span class="tag-pill">${tag}</span>`;
+                        });
+                        document.getElementById('tags-list').innerHTML = tagsHtml;
+                    } else {
+                        document.getElementById('tags-list').innerHTML = '<span class="tag-pill">❌ Este vídeo no tiene etiquetas ocultas configuradas.</span>';
+                        currentTagsText = "";
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('tags-list').innerHTML = '<span class="tag-pill">⚠️ Error al extraer las etiquetas. Inténtalo de nuevo.</span>';
+                });
+
+                // Hacer scroll suave
                 document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+                
             } else {
                 alert('Oops, parece que el enlace no es válido. Asegúrate de copiar una URL correcta de YouTube.');
+            }
+        }
+
+        // Función para el botón de copiar
+        function copyTags() {
+            if (currentTagsText !== "") {
+                navigator.clipboard.writeText(currentTagsText).then(() => {
+                    alert('✅ ¡Todas las etiquetas copiadas al portapapeles!');
+                });
+            } else {
+                alert('No hay etiquetas para copiar.');
             }
         }
     </script>
 </body>
 
 </html>
+
 
 
 
