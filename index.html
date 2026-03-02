@@ -197,7 +197,7 @@
         // Guardamos las etiquetas para poder copiarlas luego
         let currentTagsText = "";
 
-        function getThumbnails() {
+       function extractThumbnails() {
             const url = document.getElementById('youtube-url').value;
             const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|shorts\/|watch\?v=|\&v=)([^#\&\?]*).*/;
             const match = url.match(regExp);
@@ -275,6 +275,7 @@
 </body>
 
 </html>
+
 
 
 
