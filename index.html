@@ -75,7 +75,26 @@
     </style>
 </head>
 <body>
-
+<!-- BANNER DE COOKIES -->
+<div id="cookie-banner" style="position: fixed; bottom: 0; left: 0; right: 0; background: #1c1e21; color: white; padding: 20px; text-align: center; z-index: 9999; display: none;">
+    <p style="margin-bottom: 15px;">🍪 Usamos cookies para mejorar tu experiencia y mostrar anuncios personalizados.</p>
+    <button id="accept-cookies" style="background: #d32f2f; color: white; border: none; padding: 10px 20px; border-radius: 5px; margin-right: 10px; cursor: pointer;">Aceptar</button>
+    <button id="reject-cookies" style="background: #555; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Rechazar</button>
+</div>
+<script>
+    if (!localStorage.getItem('cookieConsent')) {
+        document.getElementById('cookie-banner').style.display = 'block';
+    }
+    document.getElementById('accept-cookies').addEventListener('click', function() {
+        localStorage.setItem('cookieConsent', 'accepted');
+        document.getElementById('cookie-banner').style.display = 'none';
+    });
+    document.getElementById('reject-cookies').addEventListener('click', function() {
+        localStorage.setItem('cookieConsent', 'rejected');
+        document.getElementById('cookie-banner').style.display = 'none';
+    });
+</script>
+<!-- FIN BANNER DE COOKIES -->
 
 <nav>
         <a href="#" class="logo">🚀 TubeTools</a>
@@ -301,6 +320,7 @@
 </body>
 
 </html>
+
 
 
 
